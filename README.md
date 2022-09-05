@@ -49,9 +49,9 @@ UDP Listening on IP: 192.168.1.123
 
 Note that a backspace key is not processed properly when entering strings. Please reset and retry from the beginning instead.
 
-## Host-side Scripts
+# Host-side Scripts
 
-### Motor Test
+## Motor Test
 
 Spins the four motors one by one for a moment.
 
@@ -61,7 +61,7 @@ Connect bettery to the robot.
  $ scripts/motor_test.py 192.168.1.123
 ```
 
-### Gamepad Console
+## Gamepad Console
 
 A program for flying the robot by manual control using a gamepad. It also provides visualization for IMU and other status.
 
@@ -73,16 +73,30 @@ Connect a DualShock3 game controller to the PC via USB.
 
 Make sure to put focus on the window, or the key/joystick input is not recognized.
 
-Do not move the robot while the calibration status signal is red. Calibration is started when starting the script, or when adjusting trim, and takes about 3 seconds until it turns green.
-
-## Key Assignment
+### Key Assignment
 - [ESC] to exit.
 - [a][d][w][x] to adjust roll/pitch trim. (The trim is not persisted. Write to .ini file manually if needed.)
-- Left stick for throttle. 0% when neutral and 100% when fully up.
-- Right stick for roll and pitch control.
+- Left stick (axis #1) for throttle. 0% when neutral and 100% when fully up.
+- Right stick (#3, #4) for roll and pitch control.
 
-## Display
-- The circle signal shows IMU calibration status.
+Joystick axis IDs are hard-coded in joystick.py (around lines 51--56) assuming the default configuration with Dualshock3 and Ubuntu. They may be different with different USB game controllers or operating systems.
+
+### IMU / Gyroscope Calibration
+IMU Calibration is needed before flight.
+
+For those devices which use MPU6886 (`matrix/` and `atomfly/`), this process reads the values of 3 gyros for a few seconds continuously and estimates the origin (the value which corresponds to 0 [degrees/second]) of the sensors. Gyroscope origin may drift slightly for a while (like approx. 10 or 30 seconds) after turning the power on. In such case you may need to retry until it stabilizes, before taking off.
+
+Calibration is started when starting the script or adjusting a trim, and takes about 3 seconds until it finishes. Do not move the robot while the calibration status signal is red.
+
+1. Power on the robot, and put it on the floor stably.
+1. Start the program.
+1. See the calibration state signal (see the screenshot) is red and then it turns green after a few seconds.
+1. Check "yaw" graph and see if it is flat. If it is, the robot is ready to fly.
+1. Otherwise, type [a] [d] (adjust roll trim +1 and then -1) to trigger the calibration again. Go back to step 3.
+
+### Display
+![screenshot of joystick.py](img/joystick_py_screenshot.png)
+
 
 # Third-party Code
 
